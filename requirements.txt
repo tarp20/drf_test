@@ -8,4 +8,4 @@ psycopg2-binary==2.9.3
 drf-nested-routers==0.93.4
 gunicorn
 dj-database-url==0.5.0
-whitenoise== 6.0.0
+whitenoise==6.0.0
