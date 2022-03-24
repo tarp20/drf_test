@@ -1,0 +1,1 @@
+web: gunicorn TarNews.wsgi --log-file -

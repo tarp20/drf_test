@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres
+
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+  broker:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+      - '25672:25672'
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    restart: always
+
+  api:
+    build: .
+    image: tarnews:latest
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=password
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  celery:
+    build: .
+    image: tarnews:latest
+    restart: on-failure
+    environment:
+      - CELERY_BROKER_URL=pyamqp://rabbitmq:rabbitmq@broker:5672
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=password
+    command: celery -A TarNews worker --beat --concurrency 10 -l debug
+    depends_on:
+      - db
+      - broker
+      - api
