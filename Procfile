@@ -1,1 +1,1 @@
-web: gunicorn TarNews.wsgi --log-file -
+web: gunicorn TarNews.wsgi:application --log-file - --log-level debug
