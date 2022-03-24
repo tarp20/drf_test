@@ -34,3 +34,6 @@ after docker-compose up
 unfortunately I have no experience in creating postman documentation , but but everything is tested and in a short time I will figure out it.
 ## **Deploy**
 [Deploy on Heroku link](https://tarnews.herokuapp.com)
+
+p.s :
+debug: true  -- for easy checking
